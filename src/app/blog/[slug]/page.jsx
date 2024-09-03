@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import styles from './singlePost.module.css';
+import PostUser from "@/components/postUser/postUser";
+import { getPost } from "@/lib/data";
 
 const getData = async (slug) => {
-  const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${slug}`, {next:{revalidate: 3600}})
+  const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${slug}`)
   if (!res.ok) {
     throw new Error('Something went wrong')
   }
@@ -10,11 +12,12 @@ const getData = async (slug) => {
   return data
 }
 
-const SinglePostPage = async ({params}) => {
+const SinglePostPage = async ({ params }) => {
 
-  const {slug} = params;
+  const { slug } = params;
 
   const post = await getData(slug)
+  //const post = await getPost(slug);
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>
@@ -24,10 +27,7 @@ const SinglePostPage = async ({params}) => {
         <h1 className={styles.title}>{post.title}</h1>
         <div className={styles.detail}>
           <Image src="https://images.pexels.com/photos/27063998/pexels-photo-27063998/free-photo-of-familia-de-osos.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" width={50} height={50} className={styles.avatar} />
-          <div className={styles.detailText}>
-            <span className={styles.detailTitle}>Author</span>
-            <span className={styles.detailValue}>Terry Jefferson</span>
-          </div>
+          <PostUser userId = {post.userId} />
           <div className={styles.detailText}>
             <span className={styles.detailTitle}>Published</span>
             <span className={styles.detailValue}>01.04.24</span>
