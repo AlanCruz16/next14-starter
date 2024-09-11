@@ -5,14 +5,14 @@ const userSchema = new mongoose.Schema({
     username:{
         type: String,
         required: true,
-        unique: true,
+        unique: false,
         min:3,
         max:20
     },
     email:{
         type: String,
         required: true,
-        unique: true,
+        unique: false,
         max:50,
     },
     password:{
@@ -59,7 +59,5 @@ const postSchema = new mongoose.Schema({
 );
 
 export const User = mongoose.models.User || mongoose.model("User", userSchema);
-/**
- * Exports the User model, which represents a user in the application. The User model is defined by the `userSchema` and includes fields for email, password, image, and admin status.
- */
+
 export const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
