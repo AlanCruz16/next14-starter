@@ -3,21 +3,23 @@ import styles from './singlePost.module.css';
 import PostUser from "@/components/postUser/postUser";
 import { getPost } from "@/lib/data";
 
-// const getData = async (slug) => {
-//   const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${slug}`)
-//   if (!res.ok) {
-//     throw new Error('Something went wrong')
-//   }
-//   const data = await res.json()
-//   return data
-// }
+
+//fetch data wih an API
+const getData = async (slug) => {
+  const res = await fetch(`http://localhost:3000/api/blog/${slug}`)
+  if (!res.ok) {
+    throw new Error('Something went wrong')
+  }
+  const data = await res.json()
+  return data
+}
 
 const SinglePostPage = async ({ params }) => {
 
   const { slug } = params;
 
-  //const post = await getData(slug)
-  const post = await getPost(slug);
+  const post = await getData(slug)
+  //const post = await getPost(slug);
   console.log(post);
   return (
     <div className={styles.container}>
