@@ -1,8 +1,9 @@
    "use server"
 
 import { connectToDb } from "./utils";
-import { Post } from "./models";
+import { Post, User } from "./models";
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcrypt";
 
 export const addPost = async (formData) => {
 
@@ -55,3 +56,34 @@ export const deletePost = async (formData) => {
 
     console.log(id)
 }
+
+export const register = async (formData) => {
+    const { username, email, password, passwordRepeat, img } = Object.fromEntries(formData);
+    if (password !== passwordRepeat) {
+        return {error: "Passwords do not match"}
+    }
+    try {
+        connectToDb();
+
+        const user = await User.findOne({username});
+        if (user) {
+            return {error: "Username already exists"}
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
+            img,
+        });
+        await newUser.save();
+        console.log("saved to db")
+
+    } catch (error) {
+        console.log(error);
+        return {error: "Something went wrong with the save to db"}
+    }
+    }
