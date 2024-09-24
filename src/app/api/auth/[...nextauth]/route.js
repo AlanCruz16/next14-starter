@@ -1,1 +1,2 @@
-export {GET,POST} from "/Users/alandc/Developer/2024_coding/nextjs14tutorial/src/lib/auth.js"
+
+export { GET, POST } from "../../../lib/auth"

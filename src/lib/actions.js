@@ -1,9 +1,10 @@
-   "use server"
+"use server"
 
 import { connectToDb } from "./utils";
 import { Post, User } from "./models";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcrypt";
+import { signIn } from "next-auth/react";
 
 export const addPost = async (formData) => {
 
@@ -26,10 +27,10 @@ export const addPost = async (formData) => {
         await newPost.save();
         console.log("saved to db")
         revalidatePath("blog");
-        
+
     } catch (error) {
         console.log(error);
-        return {error: "Something went wrong with the save to db"}
+        return { error: "Something went wrong with the save to db" }
     }
 
 
@@ -47,10 +48,10 @@ export const deletePost = async (formData) => {
         await Post.findByIdAndDelete(id);
         console.log("deleted from db")
         revalidatePath("blog");
-        
+
     } catch (error) {
         console.log(error);
-        return {error: "Something went wrong with the delete to db"}
+        return { error: "Something went wrong with the delete to db" }
     }
 
 
@@ -60,14 +61,14 @@ export const deletePost = async (formData) => {
 export const register = async (formData) => {
     const { username, email, password, passwordRepeat, img } = Object.fromEntries(formData);
     if (password !== passwordRepeat) {
-        return {error: "Passwords do not match"}
+        return { error: "Passwords do not match" }
     }
     try {
         connectToDb();
 
-        const user = await User.findOne({username});
+        const user = await User.findOne({ username });
         if (user) {
-            return {error: "Username already exists"}
+            return { error: "Username already exists" }
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -84,6 +85,17 @@ export const register = async (formData) => {
 
     } catch (error) {
         console.log(error);
-        return {error: "Something went wrong with the save to db"}
+        return { error: "Something went wrong with the save to db" }
     }
+}
+export const login = async (formData) => {
+    const { username, password } = Object.fromEntries(formData);
+
+    try {
+        await signIn("credentials", { username, password });
     }
+    catch (error) {
+        console.log(error);
+        return { error: "Something went wrong with the login action" }
+    }
+}
